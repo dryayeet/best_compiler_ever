@@ -112,7 +112,7 @@ Token Scanner::scan_string() {
         }
     }
 
-    // Unterminated string — return what we have as UNKNOWN
+    // Unterminated string - return what we have as UNKNOWN
     return make_token(TokenType::UNKNOWN, raw, start_col);
 }
 
