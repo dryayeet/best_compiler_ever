@@ -25,11 +25,11 @@ $(function () {
 END PROGRAM SUMARRAY`;
 
     const EXPLANATIONS = [
-        '<strong>Source Code</strong> &#8212; Edit your code, then click Compile.',
-        '<strong>Lexical Analysis</strong> &#8212; Code broken into tokens: keywords, identifiers, numbers, operators.',
-        '<strong>Parser + NLP</strong> &#8212; Grammar check with Levenshtein &amp; Bigram error hints.',
-        '<strong>Three-Address Code</strong> &#8212; Intermediate form: each instruction has at most 3 parts.',
-        '<strong>Target Assembly</strong> &#8212; Final output: LOAD, STORE, ADD, CMP, JMP instructions.'
+        '<strong>Source Code</strong> -Edit your code, then click Compile.',
+        '<strong>Lexical Analysis</strong> -Code broken into tokens: keywords, identifiers, numbers, operators.',
+        '<strong>Parser + NLP</strong> -Grammar check with Levenshtein &amp; Bigram error hints.',
+        '<strong>Three-Address Code</strong> -Intermediate form: each instruction has at most 3 parts.',
+        '<strong>Target Assembly</strong> -Final output: LOAD, STORE, ADD, CMP, JMP instructions.'
     ];
 
     // --- Init ---
