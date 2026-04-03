@@ -25,11 +25,11 @@ $(function () {
 END PROGRAM SUMARRAY`;
 
     const EXPLANATIONS = [
-        '<strong>Source Code</strong> &#8212; This is your F-Lite program. Edit it, then click <strong>Compile</strong> to see how the compiler processes it step by step.',
-        '<strong>Step 1: Lexical Analysis</strong> &#8212; The scanner reads your code character by character and breaks it into <strong>tokens</strong>: keywords, identifiers, numbers, operators, and so on. Each token is tagged with a type and its position in the source.',
-        '<strong>Step 2: Parsing + NLP Diagnostics</strong> &#8212; The parser reads the token stream and checks if your code follows the grammar rules. If something is wrong, it uses <strong>Levenshtein Distance</strong> to suggest misspelled keywords and <strong>Bigram Analysis</strong> to hint at what was expected.',
-        '<strong>Step 3: Three-Address Code</strong> &#8212; The compiler translates your program into a simple intermediate form where each instruction has at most three parts (like <code>t0 = X + Y</code>). This is easier to optimize and translate than raw source.',
-        '<strong>Step 4: Target Assembly</strong> &#8212; The intermediate code is turned into assembly instructions: LOAD, STORE, ADD, CMP, JMP, etc. This is what a real CPU would execute.'
+        '<strong>Source Code</strong> &#8212; Edit your code, then click Compile.',
+        '<strong>Lexical Analysis</strong> &#8212; Code broken into tokens: keywords, identifiers, numbers, operators.',
+        '<strong>Parser + NLP</strong> &#8212; Grammar check with Levenshtein &amp; Bigram error hints.',
+        '<strong>Three-Address Code</strong> &#8212; Intermediate form: each instruction has at most 3 parts.',
+        '<strong>Target Assembly</strong> &#8212; Final output: LOAD, STORE, ADD, CMP, JMP instructions.'
     ];
 
     // --- Init ---
