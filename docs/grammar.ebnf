@@ -1,0 +1,100 @@
+(* F-Lite Language Grammar - Extended Backus-Naur Form *)
+(* A FORTRAN-inspired Domain Specific Language *)
+
+program         = "PROGRAM" identifier NEWLINE
+                  body
+                  "END" [ "PROGRAM" [ identifier ] ] NEWLINE
+                  { subroutine } ;
+
+subroutine      = "SUBROUTINE" identifier "(" [ param_list ] ")" NEWLINE
+                  body
+                  "END" [ "SUBROUTINE" [ identifier ] ] NEWLINE ;
+
+param_list      = identifier { "," identifier } ;
+
+body            = { declaration | statement } ;
+
+(* --- Declarations --- *)
+
+declaration     = "INTEGER" var_decl_list NEWLINE ;
+
+var_decl_list   = var_decl { "," var_decl } ;
+
+var_decl        = identifier [ "(" integer_literal ")" ] ;
+
+(* --- Statements --- *)
+
+statement       = assignment_stmt
+                | read_stmt
+                | write_stmt
+                | if_stmt
+                | do_stmt
+                | call_stmt
+                | return_stmt
+                | stop_stmt ;
+
+assignment_stmt = identifier [ "(" expression ")" ] "=" expression NEWLINE ;
+
+read_stmt       = "READ" "(" var_ref { "," var_ref } ")" NEWLINE ;
+
+write_stmt      = "WRITE" "(" write_item { "," write_item } ")" NEWLINE ;
+
+write_item      = expression | string_literal ;
+
+var_ref         = identifier [ "(" expression ")" ] ;
+
+if_stmt         = "IF" "(" expression rel_op expression ")" "THEN" NEWLINE
+                  body
+                  [ "ELSE" NEWLINE body ]
+                  "END" "IF" NEWLINE ;
+
+do_stmt         = "DO" identifier "=" expression "," expression [ "," expression ] NEWLINE
+                  body
+                  "END" "DO" NEWLINE ;
+
+call_stmt       = "CALL" identifier "(" [ arg_list ] ")" NEWLINE ;
+
+return_stmt     = "RETURN" NEWLINE ;
+
+stop_stmt       = "STOP" NEWLINE ;
+
+arg_list        = expression { "," expression } ;
+
+(* --- Expressions --- *)
+
+expression      = term { ( "+" | "-" ) term } ;
+
+term            = factor { ( "*" | "/" ) factor } ;
+
+factor          = identifier [ "(" expression ")" ]
+                | integer_literal
+                | "(" expression ")"
+                | ( "+" | "-" ) factor ;
+
+(* --- Relational Operators --- *)
+
+rel_op          = ".EQ." | ".NE." | ".LT." | ".GT." | ".LE." | ".GE."
+                | "==" | "/=" | "<" | ">" | "<=" | ">=" ;
+
+(* --- Lexical Elements --- *)
+
+identifier      = letter { letter | digit | "_" } ;
+                  (* Case-insensitive; uniqueness determined by first 32 characters *)
+
+integer_literal = digit { digit } ;
+
+string_literal  = "'" { string_char } "'" ;
+
+string_char     = any_char_except_apostrophe_and_newline
+                | "\'" | "\n" | "\t" | "\\" ;
+
+comment         = "!" { any_char_except_newline } ;
+                  (* Comments extend from ! to end of line *)
+
+letter          = "A" | "B" | ... | "Z" | "a" | "b" | ... | "z" ;
+
+digit           = "0" | "1" | ... | "9" ;
+
+(* --- Keywords (case-insensitive) --- *)
+(* PROGRAM, INTEGER, READ, WRITE, IF, THEN, ELSE, DO, END,
+   SUBROUTINE, CALL, RETURN, STOP *)

@@ -1,0 +1,9 @@
+PROGRAM ERRORS
+  INTGER X
+  INTEGER Y
+  X = 10 +
+  IF (X .EQ. Y THEN
+    WRITE('equal')
+  END IF
+  WRITE(X, 'text, Y)
+END PROGRAM ERRORS

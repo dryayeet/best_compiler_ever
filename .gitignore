@@ -1,2 +1,14 @@
 comp/
 hi.py
+.claude/
+
+# Build artifacts
+*.o
+*.exe
+src/*.o
+flc.exe
+
+# Compiler output
+*.lst
+*.tac
+*.asm
