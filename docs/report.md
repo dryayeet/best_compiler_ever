@@ -2,7 +2,7 @@
 
 ## Abstract
 
-This report presents the design and implementation of F-Lite, a compiler for a custom FORTRAN-inspired Domain Specific Language (DSL). Developed in C++14, the compiler follows a traditional multi-phase pipeline: Lexical Analysis (DFA-based scanner), Recursive Descent Parsing, Intermediate Code Generation via Three-Address Code (TAC), and Target Code Generation to a simplified assembly language. A key novelty is the integration of "Light NLP" diagnostics -- specifically Levenshtein Distance for keyword recovery and Bigram-based Syntax Hinting -- to provide intelligent, human-readable error messages within a line-numbered listing file. The system is intentionally "barebones," avoiding generative tools like Flex/Bison to demonstrate deep subject knowledge in compiler theory.
+This report presents the design and implementation of F-Lite, a compiler for a custom FORTRAN-inspired Domain Specific Language (DSL). Developed in C++14, the compiler follows a traditional multi-phase pipeline: Lexical Analysis (DFA-based scanner), Recursive Descent Parsing, Intermediate Code Generation via Three-Address Code (TAC), and Target Code Generation to a simplified assembly language. A key novelty is the integration of "Light NLP" diagnostics -- specifically Levenshtein Distance for keyword recovery and Bigram-based Syntax Hinting -- to provide intelligent, human-readable error messages within a line-numbered listing file. The project also includes an interactive web-based visualizer (HTML/JS/jQuery) that lets users step through each compiler phase and observe how source code is transformed at every stage. The system is intentionally "barebones," avoiding generative tools like Flex/Bison to demonstrate deep subject knowledge in compiler theory.
 
 ## 1. Introduction
 
@@ -183,6 +183,32 @@ The listing manager generates a `.lst` file that interleaves source lines with d
 
 Errors are sorted by line number and placed immediately after their corresponding source line. Multi-line diagnostic messages (with hints) are indented for readability.
 
+### 2.9 Interactive Web Visualizer (`web/`)
+
+To make the compiler accessible as a teaching tool, the entire compiler pipeline was ported to JavaScript and embedded in a single-page web application. The visualizer allows users to step through each compiler phase interactively without installing any tools.
+
+**Architecture**: The web app consists of four files:
+
+- `index.html` - Page structure with a split-panel layout (source code on the left, phase visualization on the right)
+- `css/style.css` - Dark theme styling with color-coded token categories
+- `js/compiler.js` - A faithful JavaScript port of all C++ compiler components (Scanner, NLPEngine, Parser, SymbolTable, TargetCodeGen)
+- `js/app.js` - UI logic handling phase tabs, rendering, and navigation
+
+**Phase Walkthrough**: The app presents five phases accessible via tabs and Prev/Next navigation:
+
+1. **Source** - A code editor pre-loaded with an example program. Users can write or modify F-Lite code directly in the browser.
+2. **Tokens** - The source code is displayed with inline syntax highlighting (keywords in red, identifiers in blue, numbers in orange, strings in light blue, operators in red). The right panel shows a complete token table with type badges, lexemes, and positions.
+3. **Parser + NLP** - On success, a green confirmation is shown. On failure, each error is displayed as a card with the line number, error message, Levenshtein suggestion (with edit distance badge), and bigram hint. Source lines with errors are highlighted in red.
+4. **TAC** - The Three-Address Code output is displayed with color-coding by instruction type: labels in purple, arithmetic in red, assignments in blue, jumps in orange, I/O in green.
+5. **Assembly** - The target assembly is displayed with instruction categories colored: loads in blue, stores in green, arithmetic in orange, jumps in red, I/O in green.
+
+**Design Decisions**:
+
+- The compiler runs entirely in the browser with no backend server required. A local HTTP server is only needed to avoid browser CORS restrictions when loading from `file://`.
+- jQuery is used for DOM manipulation, loaded from CDN.
+- The JavaScript compiler is a direct port of the C++ implementation, preserving the same class structure, method names, and algorithm logic. This ensures identical behavior between the CLI and web versions.
+- The `compile()` function returns a structured result object containing tokens, errors, TAC instructions, assembly lines, and success status, making each phase independently renderable.
+
 ## 3. Results
 
 ### 3.1 Successful Compilation
@@ -207,6 +233,15 @@ The compiler detected 6 errors with NLP-enhanced messages including:
 - **Levenshtein Recovery**: `unknown keyword 'INTGER' -- Did you mean 'INTEGER'?`
 - **Bigram Hinting**: `Hint: after IDENTIFIER, typically '=', '(', ',', an operator, or newline follows.`
 - **Continuation**: All 6 errors reported in a single compilation pass
+
+### 3.3 Web Visualizer
+
+The interactive web app successfully demonstrates all compiler phases:
+
+- **Token visualization**: All tokens are correctly color-coded by category in the source view, with a complete token table showing type, lexeme, line, and column
+- **NLP error display**: Levenshtein edit distance badges appear alongside "Did you mean?" suggestions, and bigram hints are rendered below each error
+- **TAC and Assembly**: Both intermediate and target code outputs are rendered with category-based color-coding, matching the CLI compiler output exactly
+- **Cross-platform**: The visualizer runs in any modern browser (Chrome, Firefox, Edge) with no installation required
 
 ## 4. Discussion of NLP Novelties
 
@@ -249,8 +284,10 @@ Key achievements:
 - **Complete Pipeline**: Scanner, parser, ICG (TAC), target code generation, and listing management
 - **Robust Error Recovery**: Panic-mode recovery enables multi-error reporting per compilation
 - **NLP Diagnostics**: Computational linguistics algorithms provide "Did you mean?" suggestions and contextual syntax hints
-- **Clean Architecture**: Modular design with clear separation of concerns across 6 source files and 5 header files
-- **No External Dependencies**: Pure C++14 with no third-party libraries or generator tools
+- **Interactive Visualizer**: A browser-based teaching tool that walks through each compiler phase with color-coded output and step-by-step navigation
+- **Dual Implementation**: The compiler exists as both a C++14 CLI tool and a JavaScript web app, with identical behavior across both
+- **Clean Architecture**: Modular design with clear separation of concerns across 6 source files, 5 header files, and 4 web files
+- **No External Dependencies**: Pure C++14 CLI with no third-party libraries or generator tools; web app uses only jQuery
 
 ### Future Work
 
@@ -258,3 +295,5 @@ Key achievements:
 - Implement a proper register allocator using graph coloring
 - Add optimization passes on the TAC (constant folding, dead code elimination)
 - Extend NLP diagnostics with longer n-gram context for improved suggestions
+- Add animated token-by-token stepping in the web visualizer
+- Add parse tree visualization as a collapsible tree diagram

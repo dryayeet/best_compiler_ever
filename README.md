@@ -1,6 +1,6 @@
 # F-Lite Compiler
 
-A compiler for F-Lite, a small language inspired by FORTRAN. Written from scratch in C++14 with no external tools or libraries (no Flex, no Bison, nothing).
+A compiler for F-Lite, a small language inspired by FORTRAN. Written from scratch in C++14 with no external tools or libraries (no Flex, no Bison, nothing). Comes with an interactive web-based visualizer that walks you through each compiler phase step by step.
 
 ## What It Does
 
@@ -11,6 +11,7 @@ A compiler for F-Lite, a small language inspired by FORTRAN. Written from scratc
   - *Bigram Hinting*: Tells you what kind of token was expected based on what came before the error
 - **Code Generation**: Produces Three-Address Code (a simple intermediate form) and then translates that into a basic assembly language.
 - **Listing File**: Generates a `.lst` file that shows your source code with line numbers and any errors printed right below the line where they happened.
+- **Web Explorer**: A browser-based teaching tool that lets you step through each compiler phase visually. See tokens get highlighted, errors get explained, and code get translated in real time.
 
 ## The F-Lite Language
 
@@ -38,7 +39,7 @@ END PROGRAM SUMARRAY
 
 You get integers, 1D arrays, IF/THEN/ELSE, DO loops, subroutines, READ/WRITE for I/O, `!` for comments, and comparison operators in both styles (`<`, `>=` or `.LT.`, `.GE.`).
 
-## How to Build
+## How to Build (CLI Compiler)
 
 You need `g++` with C++14 support (MinGW works fine).
 
@@ -50,7 +51,7 @@ mingw32-make
 g++ -std=c++14 -Wall -Wextra -Iinclude -o flc.exe src/main.cpp src/scanner.cpp src/parser.cpp src/nlp_engine.cpp src/codegen.cpp src/logger.cpp
 ```
 
-## How to Use
+## How to Use (CLI)
 
 ```bash
 ./flc.exe <source.fl>
@@ -94,6 +95,34 @@ See listing file for details.
      Hint: after IDENTIFIER, typically '=', '(', ',', an operator, or newline follows.
 ```
 
+## Web Explorer (Interactive Visualizer)
+
+The web app lets you see what happens inside the compiler at each stage. No install needed, it runs entirely in your browser.
+
+### How to run it
+
+```bash
+# Start a local server
+cd web
+python -m http.server 8080
+
+# Then open http://localhost:8080 in your browser
+```
+
+Or just double-click `web/index.html` to open it directly (needs internet for jQuery CDN).
+
+### What you'll see
+
+The app has 5 phases you can step through using the Prev/Next buttons or arrow keys:
+
+1. **Source** - Write or edit your F-Lite code in the editor
+2. **Tokens** - Your code gets color-coded by token type (keywords, identifiers, numbers, operators). A full token table appears on the right with type, lexeme, line, and column for each token.
+3. **Parser + NLP** - Shows whether parsing passed or failed. If there are errors, you'll see Levenshtein suggestions ("Did you mean INTEGER?") with edit distance badges, and bigram hints explaining what was expected.
+4. **TAC** - The Three-Address Code output, color-coded by instruction type (labels, arithmetic, jumps, I/O).
+5. **Assembly** - The final target assembly, color-coded by category (loads, stores, arithmetic, jumps, I/O).
+
+Try introducing typos (change `INTEGER` to `INTGER`) or syntax errors (remove a closing paren) and recompile to see the NLP diagnostics in action.
+
 ## Project Structure
 
 ```
@@ -117,6 +146,12 @@ include/
 tests/
   valid_program.fl      A working test program
   error_program.fl      A broken program to test error reporting
+
+web/
+  index.html            Interactive compiler explorer (single page app)
+  css/style.css         Dark theme styling
+  js/compiler.js        Full compiler ported to JavaScript
+  js/app.js             UI logic, phase rendering, visualizations
 
 docs/
   grammar.ebnf          The formal grammar definition
