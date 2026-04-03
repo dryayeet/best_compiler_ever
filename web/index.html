@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F-Lite Compiler Explorer</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>F-Lite <span>Compiler Explorer</span></h1>
+        <button class="btn-compile" id="btn-compile">Compile</button>
+    </div>
+
+    <!-- Phase Tabs -->
+    <div class="phase-tabs">
+        <div class="phase-tab active" data-phase="0">
+            <span class="step-num">0</span> Source
+        </div>
+        <div class="phase-tab" data-phase="1">
+            <span class="step-num">1</span> Tokens
+        </div>
+        <div class="phase-tab" data-phase="2">
+            <span class="step-num">2</span> Parser
+        </div>
+        <div class="phase-tab" data-phase="3">
+            <span class="step-num">3</span> TAC
+        </div>
+        <div class="phase-tab" data-phase="4">
+            <span class="step-num">4</span> Assembly
+        </div>
+    </div>
+
+    <!-- Main Panels -->
+    <div class="main-container">
+        <!-- Left: Source Code -->
+        <div class="panel panel-left" id="left-panel">
+            <div class="panel-header">Source Code</div>
+            <div class="panel-body">
+                <div class="editor-wrap">
+                    <div class="line-numbers"></div>
+                    <textarea id="source-editor" spellcheck="false">PROGRAM SUMARRAY
+  INTEGER N, I, SUM
+  INTEGER A(100)
+
+  READ(N)
+  DO I = 1, N
+    READ(A(I))
+  END DO
+
+  SUM = 0
+  DO I = 1, N
+    SUM = SUM + A(I)
+  END DO
+
+  WRITE('Sum = ', SUM)
+  STOP
+END PROGRAM SUMARRAY</textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Visualization -->
+        <div class="panel panel-right" id="right-panel">
+            <div class="panel-header">Output</div>
+            <div class="panel-body">
+                <div class="welcome-panel">
+                    <h2>F-Lite Compiler Explorer</h2>
+                    <p>Write your code on the left and click <strong>Compile</strong> to watch each phase of the compiler in action.</p>
+                    <div class="arrow-hint">&#8592;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom: Explanation + Nav -->
+    <div class="explanation-bar">
+        <div class="nav-btns">
+            <button class="btn-nav" id="btn-prev" disabled>&larr; Prev</button>
+            <button class="btn-nav" id="btn-next" disabled>Next &rarr;</button>
+        </div>
+        <div class="explanation-text" id="explanation">
+            <strong>Source Code</strong> &#8212; This is your F-Lite program. Edit it, then click <strong>Compile</strong> to see how the compiler processes it step by step.
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="js/compiler.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
